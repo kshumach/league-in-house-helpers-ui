@@ -1,0 +1,7 @@
+node_modules
+dist
+secrets.env
+lib/
+.idea
+Include
+Scripts
