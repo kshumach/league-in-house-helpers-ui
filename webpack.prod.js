@@ -5,9 +5,7 @@ const baseConfig = require('./webpack.base');
 module.exports = merge(baseConfig, {
   mode: 'production',
   devtool: 'source-map',
-  plugins: [
-      ...baseConfig.plugins
-  ],
+  plugins: [...baseConfig.plugins],
   optimization: {
     moduleIds: 'deterministic',
     splitChunks: {

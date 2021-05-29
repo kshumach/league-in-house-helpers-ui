@@ -11,7 +11,5 @@ module.exports = merge(baseConfig, {
     contentBasePublicPath: '/',
     historyApiFallback: true,
   },
-  plugins: [
-    ...baseConfig.plugins,
-  ]
+  plugins: [...baseConfig.plugins],
 });
