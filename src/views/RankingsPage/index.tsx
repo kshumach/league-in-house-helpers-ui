@@ -32,6 +32,9 @@ const useStyles = makeStyles(({ spacing }: Theme) => ({
     marginTop: spacing(2),
     marginBottom: spacing(2),
   },
+  noSummonersMessage: {
+    marginTop: spacing(8)
+  }
 }));
 
 export default function RankingsPage(): ReactElement {
@@ -82,35 +85,46 @@ export default function RankingsPage(): ReactElement {
     );
   };
 
-  const usersWithLinkedSummoners = coalesce(users, []).filter((user) => user.summoners && user.summoners.length > 0);
+  const usersWithLinkedSummoners = coalesce(users, [])
+      .filter((user) => (user.id !== currentUser?.id) && (user.summoners && user.summoners.length > 0));
+
+  const mainContent = (
+      usersWithLinkedSummoners.length === 0
+          ? (
+              <Typography className={classes.noSummonersMessage} component="h3" variant="h5">
+                Looks like there is no one else to rate yet...
+              </Typography>
+          )
+          : usersWithLinkedSummoners.map((user: User) => renderUserRow(user))
+  );
 
   const rankingsHelpMarkdown = `
+This is just a general guideline for how you may want to rank a player. Note that this is a guide, it's not definitive.
+
+For example, a D ranked player may actually have superb mental and the game sense of an A rated player but simply lack
+the mechanics. Choose a rating you feel is fair based off these guidelines.
+
+
 ### S Tier
-* excellent communication
-* excellent map play
-* excellent level of play
-* excellent team effort
+This player is a **shot caller**. They have **excellent communication** and regularly lead the team.
+Their **mechanics and game sense are top tier** and **regularly serve as the linchpin** of a team.
+They have a **strong mental** and **do not** tilt or give up easily.
 ### A Tier
-* great communication
-* great map play
-* great level of play
-* great team effort
+They have **excellent communication** and can lead the team occasionally. Their **mechanics and game
+sense are top tier** and **regularly serve as the linchpin** of a team. They have a **good mental** and 
+**may occasionally** tilt or give up as easily as a lower rated player.
 ### B Tier
-* good communication
-* good map play
-* good level of play
-* good team effort
+They have **good communication** but not enough to lead a team. Their **mechanics and game
+sense are above average** and **occasionally serve as the linchpin** of a team. They have a **average mental** and 
+**may occasionally** tilt or give up as easily as a lower rated player.
 ### C Tier
-* average communication
-* average map play
-* average level of play
-* average team effort
+They have **average communication** but not enough to lead a team. Their **mechanics and game
+sense are average** and **rarely serve as the linchpin** of a team. They have a **average mental** and 
+**may occasionally** tilt or give up as easily as a D rated player.
 ### D Tier
-* basic communication
-* basic map play
-* basic level of play
-* basic team effort
-  `;
+They have **below average communication** and lack the game sense to lead a team. Their **mechanics and game
+sense are below average** and may be a **liability** to their team. They tend to tilt or give up **easily**.
+`;
 
   return (
     <React.Fragment>
@@ -138,7 +152,9 @@ export default function RankingsPage(): ReactElement {
           </Grid>
         </Grid>
       </Container>
-      <Container maxWidth="sm">{usersWithLinkedSummoners.map((user: User) => renderUserRow(user))}</Container>
+      <Container maxWidth="sm">
+        {mainContent}
+      </Container>
       <Dialog
         fullWidth
         maxWidth="xs"
