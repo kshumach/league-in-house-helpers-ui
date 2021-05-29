@@ -1,5 +1,9 @@
 {
   "name": "frontend",
+  "engines": {
+    "node": "14.15.4",
+    "npm": "6.14.10"
+  },
   "dependencies": {
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
@@ -39,7 +43,6 @@
     "babel-plugin-const-enum": "^1.0.1",
     "babel-plugin-import": "^1.13.3",
     "babel-plugin-transform-imports": "^2.0.0",
-    "dotenv-webpack": "^7.0.2",
     "eslint": "^7.19.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^7.2.0",

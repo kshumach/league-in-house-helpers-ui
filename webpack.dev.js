@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { merge } = require('webpack-merge');
 const path = require('path');
-// eslint-disable-next-line import/no-extraneous-dependencies
-const Dotenv = require('dotenv-webpack');
 const baseConfig = require('./webpack.base');
 
 module.exports = merge(baseConfig, {
@@ -13,8 +11,5 @@ module.exports = merge(baseConfig, {
     contentBasePublicPath: '/',
     historyApiFallback: true,
   },
-  plugins: [
-    ...baseConfig.plugins,
-    new Dotenv(),
-  ]
+  plugins: [...baseConfig.plugins],
 });
