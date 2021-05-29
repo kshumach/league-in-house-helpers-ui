@@ -3,7 +3,8 @@ export interface AppConfig {
 }
 
 const appConfig: AppConfig = {
-  API_URL: process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : 'https://league-in-houses.herokuapp.com',
+  API_URL:
+    process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : 'https://league-in-houses.herokuapp.com:8000',
 };
 
 export default appConfig;
