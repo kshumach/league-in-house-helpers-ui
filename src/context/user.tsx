@@ -50,7 +50,7 @@ export interface UserCtx {
   addSummoner: (summonerName: string) => Promise<void>;
   removeValorantAccount: (accountName: string) => Promise<void>;
   addValorantAccount: (accountName: string, tag: string) => Promise<void>;
-  updateBallot: (targetUserId: number, ranking: Rankings, targetSummoner: string) => Promise<void>;
+  updateLeagueBallot: (targetUserId: number, ranking: Rankings, targetSummoner: string) => Promise<void>;
 }
 
 export type UserContextType = Optional<UserCtx>;
@@ -256,8 +256,8 @@ function UserContextProvider({ children, handleErrors }: UserContextProps): Null
     dispatch({ type: UserReducerActions.ADD_SUMMONER, payload: summonerName });
   }
 
-  async function updateBallot(targetUserId: number, ranking: Rankings, targetSummoner: string): Promise<void> {
-    const response = await makeApiRequest<Ballot>(RequestMethods.PUT, 'rankings/rank', {
+  async function updateLeagueBallot(targetUserId: number, ranking: Rankings, targetSummoner: string): Promise<void> {
+    const response = await makeApiRequest<Ballot>(RequestMethods.PUT, 'rankings/rank_league', {
       user_id: targetUserId,
       rated_by: user.id,
       ranking: Rankings[ranking],
@@ -294,7 +294,7 @@ function UserContextProvider({ children, handleErrors }: UserContextProps): Null
         user,
         removeSummoner,
         addSummoner,
-        updateBallot,
+        updateLeagueBallot,
         addValorantAccount,
         removeValorantAccount,
         userError: error,

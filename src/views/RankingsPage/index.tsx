@@ -38,7 +38,7 @@ const useStyles = makeStyles(({ spacing }: Theme) => ({
 }));
 
 export default function RankingsPage(): ReactElement {
-  const { user: currentUser, updateBallot } = useUserContext();
+  const { user: currentUser, updateLeagueBallot } = useUserContext();
   const [isFetching, users, usersError] = useApiClient<User[]>(RequestMethods.GET, 'users');
   const [isRankingsHelpOpen, setIsRankingsHelpOpen] = useState(false);
   const classes = useStyles();
@@ -66,7 +66,7 @@ export default function RankingsPage(): ReactElement {
     const rankingValue = currentUserRankingOfThisUser ? Rankings[currentUserRankingOfThisUser.ranking] : '';
 
     const boundOnChange = (event: React.ChangeEvent<{ value: unknown }>) =>
-      updateBallot(id as number, event.target.value as number, primarySummoner);
+      updateLeagueBallot(id as number, event.target.value as number, primarySummoner);
 
     return (
       <Grid

@@ -16,7 +16,7 @@ import {
 import { useSnackbar } from 'notistack';
 import { AxiosError } from 'axios';
 import { useUserContext } from '../context/user';
-import { Left, Nullable, Role } from '../utils/types';
+import { Left, Nullable, LeagueRole } from '../utils/types';
 import { coalesce } from '../utils/general';
 import makeApiRequest, { RequestMethods } from '../utils/apiClient';
 
@@ -47,7 +47,7 @@ const useStyles = makeStyles(({ spacing }: Theme) => ({
   },
 }));
 
-const allAvailableRoles = [Role.TOP, Role.JUNGLE, Role.MID, Role.MARKSMAN, Role.SUPPORT];
+const allAvailableRoles = [LeagueRole.TOP, LeagueRole.JUNGLE, LeagueRole.MID, LeagueRole.MARKSMAN, LeagueRole.SUPPORT];
 
 export default function LeagueRolePreferencesForm(): ReactElement {
   const { user } = useUserContext();
@@ -81,7 +81,7 @@ export default function LeagueRolePreferencesForm(): ReactElement {
 
     setIsLoading(true);
 
-    const response = await makeApiRequest(RequestMethods.PUT, 'roles/preferences', {
+    const response = await makeApiRequest(RequestMethods.PUT, 'roles/league_preferences', {
       user_id: user?.id,
       primary_role: primaryRole.toUpperCase(),
       secondary_role: secondaryRole.toUpperCase(),
