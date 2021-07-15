@@ -49,7 +49,7 @@ const useStyles = makeStyles(({ spacing }: Theme) => ({
 
 const allAvailableRoles = [Role.TOP, Role.JUNGLE, Role.MID, Role.MARKSMAN, Role.SUPPORT];
 
-export default function RolePreferencesForm(): ReactElement {
+export default function LeagueRolePreferencesForm(): ReactElement {
   const { user } = useUserContext();
   const [primaryRole, setPrimaryRole] = useState(coalesce<string>(user?.preferredRoles?.primaryRole, ''));
   const [secondaryRole, setSecondaryRole] = useState(coalesce<string>(user?.preferredRoles?.secondaryRole, ''));

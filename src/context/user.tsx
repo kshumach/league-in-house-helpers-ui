@@ -22,6 +22,7 @@ export interface User extends InspectableObject {
   id: Nullable<number>;
   username: Nullable<string>;
   summoners: Array<string>;
+  valorantAccounts: Array<string>;
   preferredRoles: PreferredRoles;
   rankingBallots: RankingBallots;
 }
@@ -31,6 +32,7 @@ function initializeUser(): User {
     id: null,
     username: null,
     summoners: [],
+    valorantAccounts: [],
     preferredRoles: {
       primaryRole: null,
       secondaryRole: null,
@@ -46,6 +48,8 @@ export interface UserCtx {
   isFetchingUser: boolean;
   removeSummoner: (summonerName: string) => Promise<void>;
   addSummoner: (summonerName: string) => Promise<void>;
+  removeValorantAccount: (accountName: string) => Promise<void>;
+  addValorantAccount: (accountName: string, tag: string) => Promise<void>;
   updateBallot: (targetUserId: number, ranking: Rankings, targetSummoner: string) => Promise<void>;
 }
 
@@ -61,6 +65,8 @@ const UserContext = React.createContext<UserContextType>(undefined);
 enum UserReducerActions {
   REMOVE_SUMMONER = 'REMOVE_SUMMONER',
   ADD_SUMMONER = 'ADD_SUMMONER',
+  ADD_VALORANT_ACCOUNT = 'ADD_VALORANT_ACCOUNT',
+  REMOVE_VALORANT_ACCOUNT = 'REMOVE_VALORANT_ACCOUNT',
   INITIALIZE_USER_DATA = 'INITIALIZE_USER_DATA',
   UPDATE_BALLOT = 'UPDATE_BALLOT',
 }
@@ -69,6 +75,8 @@ type UserReducerPayloadTypes = {
   [UserReducerActions.INITIALIZE_USER_DATA]: User;
   [UserReducerActions.REMOVE_SUMMONER]: string;
   [UserReducerActions.ADD_SUMMONER]: string;
+  [UserReducerActions.ADD_VALORANT_ACCOUNT]: string;
+  [UserReducerActions.REMOVE_VALORANT_ACCOUNT]: string;
   [UserReducerActions.UPDATE_BALLOT]: Ballot;
 };
 
@@ -86,6 +94,14 @@ function reducer(
       return {
         ...user,
         summoners: [...user.summoners, summonerToAdd],
+      };
+    }
+    case UserReducerActions.ADD_VALORANT_ACCOUNT: {
+      const accountToAdd = action.payload as string;
+
+      return {
+        ...user,
+        valorantAccounts: [...user.valorantAccounts, accountToAdd],
       };
     }
     case UserReducerActions.UPDATE_BALLOT: {
@@ -110,6 +126,14 @@ function reducer(
       return {
         ...user,
         summoners: user.summoners.filter((summoner) => summoner !== summonerToRemove),
+      };
+    }
+    case UserReducerActions.REMOVE_VALORANT_ACCOUNT: {
+      const accountToRemove = action.payload;
+
+      return {
+        ...user,
+        valorantAccounts: user.valorantAccounts.filter((account) => account !== accountToRemove),
       };
     }
     default:
@@ -190,6 +214,34 @@ function UserContextProvider({ children, handleErrors }: UserContextProps): Null
     dispatch({ type: UserReducerActions.REMOVE_SUMMONER, payload: summonerName });
   }
 
+  async function removeValorantAccount(accountName: string): Promise<void> {
+    const [inGameName, tagLine] = accountName.split('#');
+    const response = await makeApiRequest(RequestMethods.DELETE, `valorant-accounts/${inGameName}/${tagLine}`);
+
+    if (response instanceof Left) {
+      enqueueSnackbar(`Failed to remove ${accountName}.`, { variant: 'error' });
+
+      return;
+    }
+
+    dispatch({ type: UserReducerActions.REMOVE_VALORANT_ACCOUNT, payload: accountName });
+  }
+
+  async function addValorantAccount(accountName: string, accountTag: string): Promise<void> {
+    const response = await makeApiRequest(RequestMethods.POST, 'valorant-accounts/register', {
+      name: accountName,
+      tag: accountTag
+    });
+
+    if (response instanceof Left) {
+      enqueueSnackbar(`Failed to add ${accountName}#${accountTag}.`, { variant: 'error' });
+
+      return;
+    }
+
+    dispatch({ type: UserReducerActions.ADD_VALORANT_ACCOUNT, payload: accountName });
+  }
+
   async function addSummoner(summonerName: string): Promise<void> {
     const response = await makeApiRequest(RequestMethods.POST, 'summoners/register', {
       in_game_name: summonerName,
@@ -243,6 +295,8 @@ function UserContextProvider({ children, handleErrors }: UserContextProps): Null
         removeSummoner,
         addSummoner,
         updateBallot,
+        addValorantAccount,
+        removeValorantAccount,
         userError: error,
         isFetchingUser: !hasLoaded,
       }}
