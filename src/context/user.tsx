@@ -10,7 +10,7 @@ import {
   Left,
   Nullable,
   Optional,
-  PreferredRoles,
+  PreferredRolesLeague, PreferredRolesValorant,
   RankingBallots,
   Rankings,
 } from '../utils/types';
@@ -23,7 +23,8 @@ export interface User extends InspectableObject {
   username: Nullable<string>;
   summoners: Array<string>;
   valorantAccounts: Array<string>;
-  preferredRoles: PreferredRoles;
+  preferredRolesLeague: PreferredRolesLeague;
+  preferredRolesValorant: PreferredRolesValorant;
   rankingBallots: RankingBallots;
 }
 
@@ -33,7 +34,12 @@ function initializeUser(): User {
     username: null,
     summoners: [],
     valorantAccounts: [],
-    preferredRoles: {
+    preferredRolesLeague: {
+      primaryRole: null,
+      secondaryRole: null,
+      offRole: null,
+    },
+    preferredRolesValorant: {
       primaryRole: null,
       secondaryRole: null,
       offRole: null,

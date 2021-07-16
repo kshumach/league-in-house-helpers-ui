@@ -6,6 +6,7 @@ import PasswordChangeForm from '../../components/PasswordChangeForm';
 import LeagueRolePreferencesForm from '../../components/LeagueRolePreferencesForm';
 import LinkLeagueAccountForm from '../../components/LinkLeagueAccountForm';
 import LinkValorantAccountForm from '../../components/LinkValorantAccountForm';
+import ValorantRolePreferencesForm from "../../components/ValorantRolePreferencesForm";
 
 enum TabOrdering {
   SETTINGS = 0,
@@ -89,6 +90,9 @@ export default function SettingsPage(): ReactElement {
         </TabPanel>
         <TabPanel currentValue={selectedTab} index={TabOrdering.LEAGUE_ROLE_PREFERENCES}>
           <LeagueRolePreferencesForm />
+        </TabPanel>
+        <TabPanel currentValue={selectedTab} index={TabOrdering.VALORANT_ROLE_PREFERENCES}>
+          <ValorantRolePreferencesForm />
         </TabPanel>
         <TabPanel currentValue={selectedTab} index={TabOrdering.LINK_LEAGUE_ACCOUNT}>
           <LinkLeagueAccountForm />

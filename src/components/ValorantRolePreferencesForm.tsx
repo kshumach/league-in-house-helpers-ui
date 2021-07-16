@@ -16,7 +16,7 @@ import {
 import { useSnackbar } from 'notistack';
 import { AxiosError } from 'axios';
 import { useUserContext } from '../context/user';
-import { Left, Nullable, LeagueRole } from '../utils/types';
+import { Left, Nullable, ValorantRole } from '../utils/types';
 import { coalesce } from '../utils/general';
 import makeApiRequest, { RequestMethods } from '../utils/apiClient';
 
@@ -47,13 +47,20 @@ const useStyles = makeStyles(({ spacing }: Theme) => ({
   },
 }));
 
-const allAvailableRoles = [LeagueRole.TOP, LeagueRole.JUNGLE, LeagueRole.MID, LeagueRole.MARKSMAN, LeagueRole.SUPPORT];
+const allAvailableRoles = [
+  ValorantRole.SENTINEL,
+  ValorantRole.DUELIST,
+  ValorantRole.CONTROLLER,
+  ValorantRole.INITIATOR,
+];
 
-export default function LeagueRolePreferencesForm(): ReactElement {
+export default function ValorantRolePreferencesForm(): ReactElement {
   const { user } = useUserContext();
-  const [primaryRole, setPrimaryRole] = useState(coalesce<string>(user?.preferredRolesLeague?.primaryRole, ''));
-  const [secondaryRole, setSecondaryRole] = useState(coalesce<string>(user?.preferredRolesLeague?.secondaryRole, ''));
-  const [offRole, setOffRole] = useState(coalesce<string>(user?.preferredRolesLeague?.offRole, ''));
+  const [primaryRole, setPrimaryRole] = useState(coalesce<string>(user?.preferredRolesValorant?.primaryRole, ''));
+  const [secondaryRole, setSecondaryRole] = useState(
+    coalesce<string>(user?.preferredRolesValorant?.secondaryRole, '')
+  );
+  const [offRole, setOffRole] = useState(coalesce<string>(user?.preferredRolesValorant?.offRole, ''));
   const [formError, setFormError] = useState<Nullable<string>>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMadeChange, setHasMadeChange] = useState(false);
@@ -81,7 +88,7 @@ export default function LeagueRolePreferencesForm(): ReactElement {
 
     setIsLoading(true);
 
-    const response = await makeApiRequest(RequestMethods.PUT, 'roles/league_preferences', {
+    const response = await makeApiRequest(RequestMethods.PUT, 'roles/valorant_preferences', {
       user_id: user?.id,
       primary_role: primaryRole.toUpperCase(),
       secondary_role: secondaryRole.toUpperCase(),
@@ -176,10 +183,10 @@ export default function LeagueRolePreferencesForm(): ReactElement {
         <Grid container alignItems="center" direction="column">
           <Grid item className={classes.formItem} xs={12}>
             <FormControl className={classes.formControl}>
-              <InputLabel id="primary-league-role-selector">Primary Role</InputLabel>
+              <InputLabel id="primary-valorant-role-selector">Primary Role</InputLabel>
               <Select
-                id="primary-league-role-selector-helper"
-                labelId="primary-league-role-selector-helper-label"
+                id="primary-valorant-role-selector-helper"
+                labelId="primary-valorant-role-selector-helper-label"
                 value={primaryRole}
                 onChange={onPrimaryRoleChange}
               >
@@ -190,10 +197,10 @@ export default function LeagueRolePreferencesForm(): ReactElement {
           </Grid>
           <Grid item className={classes.formItem} xs={12}>
             <FormControl className={classes.formControl}>
-              <InputLabel id="secondary-league-role-selector">Secondary Role</InputLabel>
+              <InputLabel id="secondary-valorant-role-selector">Secondary Role</InputLabel>
               <Select
-                id="secondary-league-role-selector-helper"
-                labelId="secondary-league-role-selector-helper-label"
+                id="secondary-valorant-role-selector-helper"
+                labelId="secondary-valorant-role-selector-helper-label"
                 value={secondaryRole}
                 onChange={onSecondaryRoleChange}
               >
@@ -204,10 +211,10 @@ export default function LeagueRolePreferencesForm(): ReactElement {
           </Grid>
           <Grid item className={classes.formItem} xs={12}>
             <FormControl className={classes.formControl}>
-              <InputLabel id="off-league-role-selector">Off Role</InputLabel>
+              <InputLabel id="off-valorant-role-selector">Off Role</InputLabel>
               <Select
-                id="off-league-role-selector-helper"
-                labelId="off-league-role-selector-helper-label"
+                id="off-valorant-role-selector-helper"
+                labelId="off-valorant-role-selector-helper-label"
                 value={offRole}
                 onChange={onOffRoleChange}
               >

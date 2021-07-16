@@ -118,10 +118,28 @@ export enum LeagueRole {
   SUPPORT = 'Support',
 }
 
-export type PreferredRoles = {
+export enum ValorantRole {
+  SENTINEL = 'Sentinel',
+  INITIATOR = 'Initiator',
+  CONTROLLER = 'Controller',
+  DUELIST = 'Duelist',
+}
+
+export enum GameOptions {
+  LEAGUE = "LEAGUE",
+  VALORANT = "VALORANT"
+}
+
+export type PreferredRolesLeague = {
   primaryRole: Nullable<LeagueRole>;
   secondaryRole: Nullable<LeagueRole>;
   offRole: Nullable<LeagueRole>;
+};
+
+export type PreferredRolesValorant = {
+  primaryRole: Nullable<ValorantRole>;
+  secondaryRole: Nullable<ValorantRole>;
+  offRole: Nullable<ValorantRole>;
 };
 
 export enum Rankings {
