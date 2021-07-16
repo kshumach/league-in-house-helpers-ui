@@ -6,11 +6,13 @@ import { useSnackbar } from 'notistack';
 import {
   Ballot,
   CustomJwtPayload,
+  GameOptions,
   InspectableObject,
   Left,
   Nullable,
   Optional,
-  PreferredRolesLeague, PreferredRolesValorant,
+  PreferredRolesLeague,
+  PreferredRolesValorant,
   RankingBallots,
   Rankings,
 } from '../utils/types';
@@ -56,7 +58,12 @@ export interface UserCtx {
   addSummoner: (summonerName: string) => Promise<void>;
   removeValorantAccount: (accountName: string) => Promise<void>;
   addValorantAccount: (accountName: string, tag: string) => Promise<void>;
-  updateLeagueBallot: (targetUserId: number, ranking: Rankings, targetSummoner: string) => Promise<void>;
+  updateBallot: (
+    targetUserId: number,
+    ranking: Rankings,
+    rankingType: GameOptions,
+    targetName: string
+  ) => Promise<void>;
 }
 
 export type UserContextType = Optional<UserCtx>;
@@ -114,8 +121,11 @@ function reducer(
       const currentBallots = user.rankingBallots;
       const updatedBallot = action.payload as Ballot;
       const targetUserId = updatedBallot.user_id;
+      const rankingType = updatedBallot.ranking_type;
       // Preserve the ordering so the UI is consistent
-      const currentBallotIndex = currentBallots.findIndex((ballot: Ballot) => ballot.user_id === targetUserId);
+      const currentBallotIndex = currentBallots.findIndex(
+        (ballot: Ballot) => ballot.user_id === targetUserId && ballot.ranking_type === rankingType
+      );
 
       return {
         ...user,
@@ -236,7 +246,7 @@ function UserContextProvider({ children, handleErrors }: UserContextProps): Null
   async function addValorantAccount(accountName: string, accountTag: string): Promise<void> {
     const response = await makeApiRequest(RequestMethods.POST, 'valorant-accounts/register', {
       name: accountName,
-      tag: accountTag
+      tag: accountTag,
     });
 
     if (response instanceof Left) {
@@ -262,22 +272,28 @@ function UserContextProvider({ children, handleErrors }: UserContextProps): Null
     dispatch({ type: UserReducerActions.ADD_SUMMONER, payload: summonerName });
   }
 
-  async function updateLeagueBallot(targetUserId: number, ranking: Rankings, targetSummoner: string): Promise<void> {
-    const response = await makeApiRequest<Ballot>(RequestMethods.PUT, 'rankings/rank_league', {
+  async function updateBallot(
+    targetUserId: number,
+    ranking: Rankings,
+    rankingType: GameOptions,
+    targetName: string
+  ): Promise<void> {
+    const response = await makeApiRequest<Ballot>(RequestMethods.PUT, 'rankings/rank', {
       user_id: targetUserId,
       rated_by: user.id,
       ranking: Rankings[ranking],
+      ranking_type: rankingType.toUpperCase(),
     });
 
     if (response instanceof Left) {
-      enqueueSnackbar(`Failed to update ranking of ${targetSummoner}`, { variant: 'error' });
+      enqueueSnackbar(`Failed to update ranking of ${targetName}`, { variant: 'error' });
 
       return;
     }
 
     dispatch({ type: UserReducerActions.UPDATE_BALLOT, payload: response.unsafeUnwrap() });
 
-    enqueueSnackbar(`Successfully updated ranking of ${targetSummoner}`, { variant: 'success' });
+    enqueueSnackbar(`Successfully updated ranking of ${targetName}`, { variant: 'success' });
   }
 
   const renderContent = () => {
@@ -300,7 +316,7 @@ function UserContextProvider({ children, handleErrors }: UserContextProps): Null
         user,
         removeSummoner,
         addSummoner,
-        updateLeagueBallot,
+        updateBallot,
         addValorantAccount,
         removeValorantAccount,
         userError: error,

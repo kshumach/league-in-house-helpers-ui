@@ -16,7 +16,7 @@ import ReactMarkdown from 'react-markdown';
 import { RequestMethods, useApiClient } from '../../utils/apiClient';
 import { User, useUserContext } from '../../context/user';
 import { coalesce } from '../../utils/general';
-import { Ballot, Rankings } from '../../utils/types';
+import { Ballot, GameOptions, Rankings } from '../../utils/types';
 
 const useStyles = makeStyles(({ spacing }: Theme) => ({
   contentWrapper: {
@@ -33,12 +33,12 @@ const useStyles = makeStyles(({ spacing }: Theme) => ({
     marginBottom: spacing(2),
   },
   noSummonersMessage: {
-    marginTop: spacing(8)
-  }
+    marginTop: spacing(8),
+  },
 }));
 
-export default function RankingsPage(): ReactElement {
-  const { user: currentUser, updateLeagueBallot } = useUserContext();
+export default function LeagueRankingsPage(): ReactElement {
+  const { user: currentUser, updateBallot } = useUserContext();
   const [isFetching, users, usersError] = useApiClient<User[]>(RequestMethods.GET, 'users');
   const [isRankingsHelpOpen, setIsRankingsHelpOpen] = useState(false);
   const classes = useStyles();
@@ -60,13 +60,15 @@ export default function RankingsPage(): ReactElement {
 
   const renderUserRow = ({ id, summoners }: User) => {
     const primarySummoner = summoners[0];
-    const currentUserRankingBallots = coalesce(currentUser?.rankingBallots, []);
+    const currentUserRankingBallots = coalesce(currentUser?.rankingBallots, []).filter(
+      (ranking) => ranking.ranking_type === GameOptions.LEAGUE
+    );
     const currentUserRankingOfThisUser = currentUserRankingBallots.find((ballot: Ballot) => ballot.user_id === id);
 
     const rankingValue = currentUserRankingOfThisUser ? Rankings[currentUserRankingOfThisUser.ranking] : '';
 
     const boundOnChange = (event: React.ChangeEvent<{ value: unknown }>) =>
-      updateLeagueBallot(id as number, event.target.value as number, primarySummoner);
+      updateBallot(id as number, event.target.value as number, GameOptions.LEAGUE, primarySummoner);
 
     return (
       <Grid
@@ -85,18 +87,18 @@ export default function RankingsPage(): ReactElement {
     );
   };
 
-  const usersWithLinkedSummoners = coalesce(users, [])
-      .filter((user) => (user.id !== currentUser?.id) && (user.summoners && user.summoners.length > 0));
-
-  const mainContent = (
-      usersWithLinkedSummoners.length === 0
-          ? (
-              <Typography className={classes.noSummonersMessage} component="h3" variant="h5">
-                Looks like there is no one else to rate yet...
-              </Typography>
-          )
-          : usersWithLinkedSummoners.map((user: User) => renderUserRow(user))
+  const usersWithLinkedSummoners = coalesce(users, []).filter(
+    (user) => user.id !== currentUser?.id && user.summoners && user.summoners.length > 0
   );
+
+  const mainContent =
+    usersWithLinkedSummoners.length === 0 ? (
+      <Typography className={classes.noSummonersMessage} component="h3" variant="h5">
+        Looks like there is no one else to rate yet...
+      </Typography>
+    ) : (
+      usersWithLinkedSummoners.map((user: User) => renderUserRow(user))
+    );
 
   const rankingsHelpMarkdown = `
 This is just a general guideline for how you may want to rank a player. Note that this is a guide, it's not definitive.
@@ -126,20 +128,28 @@ They have **below average communication** and lack the game sense to lead a team
 sense are below average** and may be a **liability** to their team. They tend to tilt or give up **easily**.
 `;
 
+  if (coalesce(currentUser?.summoners, []).length === 0) {
+    return (
+      <Typography component="h1" variant="h5">
+        You do not have any linked summoners. Please link at least 1 league account in order to be able to rank others.
+      </Typography>
+    );
+  }
+
   return (
     <React.Fragment>
       <Container className={classes.contentWrapper} maxWidth="md">
         <Grid container direction="row">
           <Grid item>
             <Typography className={classes.title} component="h3" variant="h5">
-              Rank Other Players
+              Rank Other League Players
             </Typography>
           </Grid>
           <Grid item>
             <span>
               <Typography component="p">
-                Rank other players on a scale of S-D (S being the best) on how well you think they place among everyone
-                else.
+                Rank other League players on a scale of S-D (S being the best) on how well you think they place among
+                everyone else.
               </Typography>
               <Typography component="p">
                 Click{' '}
@@ -152,9 +162,7 @@ sense are below average** and may be a **liability** to their team. They tend to
           </Grid>
         </Grid>
       </Container>
-      <Container maxWidth="sm">
-        {mainContent}
-      </Container>
+      <Container maxWidth="sm">{mainContent}</Container>
       <Dialog
         fullWidth
         maxWidth="xs"

@@ -14,8 +14,9 @@ import NavBar from '../../components/NavBar';
 import ErrorHandler from '../../components/ErrorHandler';
 import { NoRouteMatchError } from '../../utils/errors';
 import SettingsPage from '../SettingsPage';
-import RankingsPage from '../RankingsPage';
-import { HOME_PATH, LOGIN_PATH, RANKINGS_PATH, REGISTER_PATH, SETTINGS_PATH } from '../../utils/paths';
+import LeagueRankingsPage from '../LeagueRankingsPage';
+import { HOME_PATH, LOGIN_PATH, LEAGUE_RANKINGS_PATH, VALORANT_RANKINGS_PATH, REGISTER_PATH, SETTINGS_PATH } from '../../utils/paths';
+import ValorantRankingsPage from "../ValorantRankingsPage";
 
 export default function App(): ReactElement {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
@@ -62,8 +63,11 @@ export default function App(): ReactElement {
                   <Route exact path={SETTINGS_PATH}>
                     <SettingsPage />
                   </Route>
-                  <Route exact path={RANKINGS_PATH}>
-                    <RankingsPage />
+                  <Route exact path={LEAGUE_RANKINGS_PATH}>
+                    <LeagueRankingsPage />
+                  </Route>
+                  <Route exact path={VALORANT_RANKINGS_PATH}>
+                    <ValorantRankingsPage />
                   </Route>
                 </NavBar>
               </UserContextProvider>

@@ -126,8 +126,8 @@ export enum ValorantRole {
 }
 
 export enum GameOptions {
-  LEAGUE = "LEAGUE",
-  VALORANT = "VALORANT"
+  LEAGUE = 'League',
+  VALORANT = 'Valorant'
 }
 
 export type PreferredRolesLeague = {
@@ -157,6 +157,7 @@ export interface Ballot {
   rated_by: number;
   user_id: number;
   ranking: Rankings;
+  ranking_type: GameOptions;
 }
 
 export type RankingBallots = Array<Ballot>;
