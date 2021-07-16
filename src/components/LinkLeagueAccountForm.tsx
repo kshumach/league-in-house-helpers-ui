@@ -39,7 +39,7 @@ const useStyles = makeStyles(({ spacing }: Theme) => ({
   },
 }));
 
-export default function LinkAccountForm(): ReactElement {
+export default function LinkLeagueAccountForm(): ReactElement {
   const { user, removeSummoner, addSummoner } = useUserContext();
   const [newSummonerName, setNewSummonerName] = useState('');
   const [isLoading, setIsLoading] = useState(false);

@@ -3,19 +3,25 @@ import { Container, Paper, Tab, Tabs } from '@material-ui/core';
 import { useLocation } from 'react-router-dom';
 import { InspectableObject } from '../../utils/types';
 import PasswordChangeForm from '../../components/PasswordChangeForm';
-import RolePreferencesForm from '../../components/RolePreferencesForm';
-import LinkAccountForm from '../../components/LinkAccountForm';
+import LeagueRolePreferencesForm from '../../components/LeagueRolePreferencesForm';
+import LinkLeagueAccountForm from '../../components/LinkLeagueAccountForm';
+import LinkValorantAccountForm from '../../components/LinkValorantAccountForm';
+import ValorantRolePreferencesForm from "../../components/ValorantRolePreferencesForm";
 
 enum TabOrdering {
   SETTINGS = 0,
-  ROLE_PREFERENCES = 1,
-  LINK_ACCOUNT = 2,
+  LEAGUE_ROLE_PREFERENCES = 1,
+  VALORANT_ROLE_PREFERENCES = 2,
+  LINK_LEAGUE_ACCOUNT = 3,
+  LINK_VALORANT_ACCOUNT = 4,
 }
 
 const hashToSettingMap: { [key: string]: number } = {
   '#change-password': 0,
-  '#role-preferences': 1,
-  '#link-account': 2,
+  '#league-role-preferences': 1,
+  '#valorant-role-preferences': 2,
+  '#link-league-account': 3,
+  '#link-valorant-account': 4,
   '': 0,
 };
 
@@ -40,7 +46,7 @@ export default function SettingsPage(): ReactElement {
   const onTabSelect = (_: React.ChangeEvent<NonNullable<InspectableObject>>, newTab: number) => setSelectedTab(newTab);
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="lg">
       <Paper>
         <Tabs centered aria-label="settings" role="tablist" value={selectedTab} onChange={onTabSelect}>
           <Tab
@@ -51,28 +57,48 @@ export default function SettingsPage(): ReactElement {
             role="tab"
           />
           <Tab
-            aria-controls={`nav-tabpanel-${TabOrdering.ROLE_PREFERENCES}`}
-            href="#role-preferences"
-            id={`nav-tabpanel-${TabOrdering.ROLE_PREFERENCES}`}
-            label="Role Preferences"
+            aria-controls={`nav-tabpanel-${TabOrdering.LEAGUE_ROLE_PREFERENCES}`}
+            href="#league-role-preferences"
+            id={`nav-tabpanel-${TabOrdering.LEAGUE_ROLE_PREFERENCES}`}
+            label="League Role Preferences"
             role="tab"
           />
           <Tab
-            aria-controls={`nav-tabpanel-${TabOrdering.LINK_ACCOUNT}`}
-            href="#link-account"
-            id={`nav-tabpanel-${TabOrdering.LINK_ACCOUNT}`}
-            label="Link Account"
+            aria-controls={`nav-tabpanel-${TabOrdering.VALORANT_ROLE_PREFERENCES}`}
+            href="#valorant-role-preferences"
+            id={`nav-tabpanel-${TabOrdering.VALORANT_ROLE_PREFERENCES}`}
+            label="Valorant Role Preferences"
+            role="tab"
+          />
+          <Tab
+            aria-controls={`nav-tabpanel-${TabOrdering.LINK_LEAGUE_ACCOUNT}`}
+            href="#link-league-account"
+            id={`nav-tabpanel-${TabOrdering.LINK_LEAGUE_ACCOUNT}`}
+            label="Link League Account"
+            role="tab"
+          />
+          <Tab
+            aria-controls={`nav-tabpanel-${TabOrdering.LINK_VALORANT_ACCOUNT}`}
+            href="#link-valorant-account"
+            id={`nav-tabpanel-${TabOrdering.LINK_VALORANT_ACCOUNT}`}
+            label="Link Valorant Account"
             role="tab"
           />
         </Tabs>
         <TabPanel currentValue={selectedTab} index={TabOrdering.SETTINGS}>
           <PasswordChangeForm />
         </TabPanel>
-        <TabPanel currentValue={selectedTab} index={TabOrdering.ROLE_PREFERENCES}>
-          <RolePreferencesForm />
+        <TabPanel currentValue={selectedTab} index={TabOrdering.LEAGUE_ROLE_PREFERENCES}>
+          <LeagueRolePreferencesForm />
         </TabPanel>
-        <TabPanel currentValue={selectedTab} index={TabOrdering.LINK_ACCOUNT}>
-          <LinkAccountForm />
+        <TabPanel currentValue={selectedTab} index={TabOrdering.VALORANT_ROLE_PREFERENCES}>
+          <ValorantRolePreferencesForm />
+        </TabPanel>
+        <TabPanel currentValue={selectedTab} index={TabOrdering.LINK_LEAGUE_ACCOUNT}>
+          <LinkLeagueAccountForm />
+        </TabPanel>
+        <TabPanel currentValue={selectedTab} index={TabOrdering.LINK_VALORANT_ACCOUNT}>
+          <LinkValorantAccountForm />
         </TabPanel>
       </Paper>
     </Container>

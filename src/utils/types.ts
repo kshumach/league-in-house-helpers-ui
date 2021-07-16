@@ -110,7 +110,7 @@ export type Either<T, E extends Error> = Left<T, E> | Right<T, E>;
 
 export type ApiMethodReturnValue<T> = Either<T, Error | LoginRequiredError>;
 
-export enum Role {
+export enum LeagueRole {
   TOP = 'Top',
   JUNGLE = 'Jungle',
   MID = 'Mid',
@@ -118,10 +118,28 @@ export enum Role {
   SUPPORT = 'Support',
 }
 
-export type PreferredRoles = {
-  primaryRole: Nullable<Role>;
-  secondaryRole: Nullable<Role>;
-  offRole: Nullable<Role>;
+export enum ValorantRole {
+  SENTINEL = 'Sentinel',
+  INITIATOR = 'Initiator',
+  CONTROLLER = 'Controller',
+  DUELIST = 'Duelist',
+}
+
+export enum GameOptions {
+  LEAGUE = 'League',
+  VALORANT = 'Valorant'
+}
+
+export type PreferredRolesLeague = {
+  primaryRole: Nullable<LeagueRole>;
+  secondaryRole: Nullable<LeagueRole>;
+  offRole: Nullable<LeagueRole>;
+};
+
+export type PreferredRolesValorant = {
+  primaryRole: Nullable<ValorantRole>;
+  secondaryRole: Nullable<ValorantRole>;
+  offRole: Nullable<ValorantRole>;
 };
 
 export enum Rankings {
@@ -133,45 +151,13 @@ export enum Rankings {
   NOT_RATED = -1,
 }
 
-export enum RankingsDescriptions {
-  S = `
-  * excellent communication
-  * excellent map play
-  * excellent level of play
-  * excellent team effort
-  `,
-  A = `
-  * great communication
-  * great map play
-  * great level of play
-  * great team effort
-  `,
-  B = `
-  * good communication
-  * good map play
-  * good level of play
-  * good team effort
-  `,
-  C = `
-  * average communication
-  * average map play
-  * average level of play
-  * average team effort
-  `,
-  D = `
-  * basic communication
-  * basic map play
-  * basic level of play
-  * basic team effort
-  `,
-}
-
 export interface Ballot {
   /* eslint-disable camelcase */
   // Nested in an array so camelizeKeys doesn't convert this
   rated_by: number;
   user_id: number;
   ranking: Rankings;
+  ranking_type: GameOptions;
 }
 
 export type RankingBallots = Array<Ballot>;

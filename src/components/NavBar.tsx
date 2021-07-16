@@ -4,10 +4,10 @@ import { Link, LinkProps, useHistory } from 'react-router-dom';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import HomeIcon from '@material-ui/icons/Home';
 import PollIcon from '@material-ui/icons/Poll';
-import { Nullable } from '../utils/types';
+import {InspectableObject, Nullable} from '../utils/types';
 import makeApiRequest, { RequestMethods } from '../utils/apiClient';
 import { deleteStoredTokenPair } from '../utils/general';
-import { RANKINGS_PATH, HOME_PATH } from '../utils/paths';
+import { HOME_PATH, LEAGUE_RANKINGS_PATH, VALORANT_RANKINGS_PATH} from '../utils/paths';
 
 const useStyles = makeStyles(({ spacing }: Theme) => ({
   container: {
@@ -34,8 +34,8 @@ const useStyles = makeStyles(({ spacing }: Theme) => ({
   },
   navItems: {
     marginRight: 'auto',
-    marginLeft: 'auto',
-  },
+    marginLeft: 'auto'
+  }
 }));
 
 interface NavItemProps {
@@ -109,8 +109,13 @@ export default function NavBar({ children }: { children: ReactElement[] }): Reac
           </NavItem>
         </Grid>
         <Grid item className={classes.navItems} xs={1}>
-          <NavItem icon={<PollIcon />} to={RANKINGS_PATH}>
-            Rankings
+          <NavItem icon={<PollIcon />} to={LEAGUE_RANKINGS_PATH}>
+            League Rankings
+          </NavItem>
+        </Grid>
+        <Grid item className={classes.navItems} xs={1}>
+          <NavItem icon={<PollIcon />} to={VALORANT_RANKINGS_PATH}>
+            Valorant Rankings
           </NavItem>
         </Grid>
         <Grid item className={classes.settings} xs={1}>
